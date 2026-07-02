@@ -7,7 +7,7 @@ export default function ExternalSubmitPage() {
         </p>
         <h1 className="mt-1 text-lg font-semibold">现场问题提交系统</h1>
         <p className="mt-1 text-sm leading-6 text-[var(--fc-text-secondary)]">
-          移动端一等体验。Phase 5 接入登录、项目权限、附件强制和高风险创建。
+          售后角色专用入口。问题字段、附件强制和高风险创建在 Phase 5 接入。
         </p>
       </div>
       <form className="grid gap-4 p-5">

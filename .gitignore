@@ -21,6 +21,7 @@ coverage/
 test-results/
 playwright-report/
 tsconfig.tsbuildinfo
+.tmp/
 
 # Editor and OS noise.
 .DS_Store

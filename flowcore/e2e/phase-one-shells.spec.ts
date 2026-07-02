@@ -1,16 +1,20 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
-const pageShells = [
-  ["/login", "欢迎登录"],
-  ["/dashboard", "项目看板"],
-  ["/issues", "问题 / 变更中心"],
-  ["/issues/sample", "问题 / 变更详情"],
-  ["/todos", "我的待办"],
-  ["/base-data", "基础数据管理"],
-  ["/import-jobs/sample", "导入结果"],
-  ["/submit", "现场问题提交系统"],
-  ["/ai", "AI 建议面板"],
-  ["/projects/sample", "项目详情"]
+const demoPassword = "FlowCore@123456";
+
+const pageShells = [["/login", "欢迎登录"]] as const;
+
+const protectedPaths = [
+  "/dashboard",
+  "/issues",
+  "/issues/sample",
+  "/todos",
+  "/base-data",
+  "/import-jobs/sample",
+  "/ai",
+  "/projects/sample",
+  "/submit"
 ] as const;
 
 for (const [path, heading] of pageShells) {
@@ -22,7 +26,7 @@ for (const [path, heading] of pageShells) {
 
 test("external submit remains inside a 375px mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/submit");
+  await signInAsAfterSales(page);
 
   const overflow = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
@@ -34,7 +38,7 @@ test("external submit remains inside a 375px mobile viewport", async ({ page }) 
 
 test("external submit uses the sticky bottom action area from the prototype", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/submit");
+  await signInAsAfterSales(page);
 
   const footerPosition = await page
     .locator("footer")
@@ -42,3 +46,43 @@ test("external submit uses the sticky bottom action area from the prototype", as
 
   expect(footerPosition).toBe("sticky");
 });
+
+for (const path of protectedPaths) {
+  test(`${path} requires a valid session`, async ({ page }) => {
+    await page.goto(path);
+
+    const url = new URL(page.url());
+
+    expect(url.pathname).toBe("/login");
+    expect(url.searchParams.get("reason")).toBe("session_required");
+    expect(url.searchParams.get("next")).toBe(path);
+    await expect(page.getByRole("heading", { exact: true, name: "欢迎登录" })).toBeVisible();
+    await expect(page.getByText("请先登录后再访问系统页面。")).toBeVisible();
+  });
+}
+
+test("wecom callback degrades clearly when enterprise config is missing", async ({ request }) => {
+  const response = await request.get("/api/wecom/callback");
+  const body = (await response.json()) as { code: string; missing: string[] };
+
+  expect(response.status()).toBe(503);
+  expect(body.code).toBe("wecom_not_configured");
+  expect(body.missing).toContain("WECOM_CORP_ID");
+});
+
+test("wecom start degrades clearly when enterprise config is missing", async ({ request }) => {
+  const response = await request.get("/api/wecom/start");
+  const body = (await response.json()) as { code: string; missing: string[] };
+
+  expect(response.status()).toBe(503);
+  expect(body.code).toBe("wecom_not_configured");
+  expect(body.missing).toContain("WECOM_CORP_ID");
+});
+
+async function signInAsAfterSales(page: Page) {
+  await page.goto("/login");
+  await page.getByLabel("账号").fill("service001");
+  await page.getByLabel("密码").fill(demoPassword);
+  await page.getByRole("button", { name: "登录" }).click();
+  await expect(page).toHaveURL(/\/submit$/);
+}

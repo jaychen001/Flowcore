@@ -4,14 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Bell, Search } from "lucide-react";
-import { appNavItems } from "@/lib/navigation";
+import { getVisibleNavItems } from "@/lib/navigation";
 
 type AppShellProps = {
   children: ReactNode;
+  permissions: string[];
+  userName: string;
 };
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, permissions, userName }: AppShellProps) {
   const pathname = usePathname();
+  const visibleNavItems = getVisibleNavItems(permissions);
 
   return (
     <div className="min-h-screen bg-[var(--fc-bg)] text-[var(--fc-text)]">
@@ -21,7 +24,7 @@ export function AppShell({ children }: AppShellProps) {
           <p className="mt-1 text-xs leading-5 text-white/55">项目风险与变更闭环</p>
         </div>
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-          <NavGroup items={appNavItems} pathname={pathname} />
+          <NavGroup items={visibleNavItems} pathname={pathname} />
         </nav>
       </aside>
       <div className="lg:pl-64">
@@ -49,7 +52,7 @@ export function AppShell({ children }: AppShellProps) {
               >
                 <Bell className="size-4" />
               </button>
-              <span className="font-medium text-[var(--fc-text)]">演示用户</span>
+              <span className="font-medium text-[var(--fc-text)]">{userName}</span>
             </div>
           </div>
         </header>
@@ -60,7 +63,7 @@ export function AppShell({ children }: AppShellProps) {
 }
 
 type NavGroupProps = {
-  items: typeof appNavItems;
+  items: ReturnType<typeof getVisibleNavItems>;
   pathname: string;
 };
 
