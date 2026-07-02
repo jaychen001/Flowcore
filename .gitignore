@@ -1,0 +1,29 @@
+# Planning and local orchestration documents stay outside the code repository.
+Product-Spec*.md
+Design-Brief.md
+DEV-PLAN.md
+AGENTS.md
+design/
+flowcore.zip
+.agents/
+.codex/
+
+# Environment and local runtime files.
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/
+tsconfig.tsbuildinfo
+
+# Editor and OS noise.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

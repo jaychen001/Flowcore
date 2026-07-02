@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --fc-bg: #f5f7fb;
+  --fc-surface: #ffffff;
+  --fc-surface-muted: #f8fafc;
+  --fc-primary: #1677ff;
+  --fc-primary-dark: #0f5fcf;
+  --fc-success: #2e7d32;
+  --fc-warning: #d97706;
+  --fc-danger: #c2410c;
+  --fc-info: #1677ff;
+  --fc-text: #172033;
+  --fc-text-secondary: #64748b;
+  --fc-text-muted: #8a97aa;
+  --fc-border: #d8dee8;
+  --fc-sidebar: #0f172a;
+  --fc-radius-sm: 4px;
+  --fc-radius-md: 8px;
+  --fc-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--fc-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--fc-bg);
+  color: var(--fc-text);
+  font-family: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--fc-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
