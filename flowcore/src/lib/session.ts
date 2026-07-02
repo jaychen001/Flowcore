@@ -2,7 +2,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { and, eq, gt } from "drizzle-orm";
 import { db } from "@/db/client";
 import { roles, sessions, userRoles, users } from "@/db/schema";
-import { getDefaultRouteForRoles, getPermissionsForRoles } from "./permissions";
+import { getDefaultRouteForRoles, getPermissionsForRoleRecords } from "./permissions";
 
 export const SESSION_COOKIE_NAME = "flowcore_session";
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -58,13 +58,13 @@ export async function getAuthenticatedUser(token: string): Promise<Authenticated
   }
 
   const roleRows = await db
-    .select({ name: roles.name })
+    .select({ name: roles.name, permissions: roles.permissions })
     .from(userRoles)
     .innerJoin(roles, eq(userRoles.roleId, roles.id))
     .where(and(eq(userRoles.userId, sessionRow.userId), eq(roles.status, "active")));
 
   const roleNames = roleRows.map((row) => row.name);
-  const permissions = getPermissionsForRoles(roleNames);
+  const permissions = getPermissionsForRoleRecords(roleRows);
 
   return {
     id: sessionRow.userId,

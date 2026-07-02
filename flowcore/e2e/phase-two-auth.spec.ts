@@ -2,7 +2,7 @@ import { createHmac } from "node:crypto";
 import { expect, test } from "@playwright/test";
 
 const demoPassword = "FlowCore@123456";
-const authSecret = "phase2-test-secret-minimum-32-characters";
+const authSecret = process.env.BETTER_AUTH_SECRET ?? "phase2-test-secret-minimum-32-characters";
 
 test("valid local account signs in and reaches the role default page", async ({ page }) => {
   await page.goto("/login");

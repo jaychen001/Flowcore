@@ -40,7 +40,7 @@ export const appNavItems: NavItem[] = [
     href: "/base-data",
     icon: Database,
     description: "维护人员、部门、角色和项目",
-    requiredPermissions: ["master-data:manage"]
+    requiredPermissions: ["master-data:manage", "projects:manage"]
   }
 ];
 
@@ -48,8 +48,8 @@ const routeAccessRules: Array<{
   prefix: string;
   requiredPermissions: readonly Permission[];
 }> = [
-  { prefix: "/base-data", requiredPermissions: ["master-data:manage"] },
-  { prefix: "/import-jobs", requiredPermissions: ["master-data:manage"] },
+  { prefix: "/base-data", requiredPermissions: ["master-data:manage", "projects:manage"] },
+  { prefix: "/import-jobs", requiredPermissions: ["master-data:manage", "projects:manage"] },
   { prefix: "/issues", requiredPermissions: ["issues:read", "issues:manage"] },
   { prefix: "/projects", requiredPermissions: ["projects:manage"] },
   { prefix: "/todos", requiredPermissions: ["todos:read"] },

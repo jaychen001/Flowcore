@@ -17,6 +17,10 @@ export const ROLE_PERMISSIONS = {
 
 export type RoleName = keyof typeof ROLE_PERMISSIONS;
 export type Permission = (typeof ROLE_PERMISSIONS)[RoleName][number];
+export type RolePermissionRecord = {
+  name: string;
+  permissions: string[];
+};
 
 export function getPermissionsForRoles(roleNames: string[]): Permission[] {
   const permissions = new Set<Permission>();
@@ -26,6 +30,23 @@ export function getPermissionsForRoles(roleNames: string[]): Permission[] {
       for (const permission of ROLE_PERMISSIONS[roleName]) {
         permissions.add(permission);
       }
+    }
+  }
+
+  return [...permissions];
+}
+
+export function getPermissionsForRoleRecords(roleRecords: RolePermissionRecord[]): string[] {
+  const permissions = new Set<string>();
+
+  for (const roleRecord of roleRecords) {
+    const sourcePermissions =
+      roleRecord.permissions.length > 0
+        ? roleRecord.permissions
+        : getPermissionsForRoles([roleRecord.name]);
+
+    for (const permission of sourcePermissions) {
+      permissions.add(permission);
     }
   }
 
